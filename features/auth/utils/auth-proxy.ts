@@ -45,6 +45,8 @@ export async function handleAuthProxy(request: NextRequest) {
         }
         else return NextResponse.next();
     }
-    if (!session) return redirectToSignIn(request, pathname);
+    if (!session){
+         return redirectToSignIn(request, pathname);
+    }
     return NextResponse.next();
 }
