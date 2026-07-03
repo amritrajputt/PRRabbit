@@ -27,7 +27,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
-
+  githubInstallation GithubInstallation?
   @@unique([email])
   @@map("user")
 }
