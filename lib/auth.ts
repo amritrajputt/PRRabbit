@@ -11,6 +11,11 @@ export const auth = betterAuth({
     github: { 
       clientId: process.env.GITHUB_CLIENT_ID as string, 
       clientSecret: process.env.GITHUB_CLIENT_SECRET as string, 
+      mapProfileToUser:async(profile)=>({
+        email:profile.email ?? `${profile.id}@users.noreply.github.com`,
+        name: profile.name ?? profile.login,
+        image:profile.avatar_url,
+      })
     }, 
   }, 
   plugins: [nextCookies()], // Add the future compatible when we use google for login
