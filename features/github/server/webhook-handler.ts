@@ -6,6 +6,9 @@ export type pullRequestWebhookPayload = {
     installation: {
         id: number;
     };
+    repository:{
+        full_name: string;
+    }
     pull_request: {
         number: number;
         title: string;

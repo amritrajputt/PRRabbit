@@ -96,17 +96,17 @@ model GithubInstallation {
 model PullRequest{
   id            String       @id @default(cuid())
   installationId Int
-  repoFullName String
-  prNumber int
-  title String
-  authorLogin String?
-  baseBranch String
-  headSha String
-  status String
-  reviewComment String
-  reviewedAt DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  repoFullName  String
+  prNumber      Int
+  title         String
+  authorLogin   String?
+  baseBranch    String
+  headSha       String
+  status        String
+  reviewComment String?
+  reviewedAt    DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
   
   @@unique ([repoFullName, prNumber])
   @@map("pull_request")
