@@ -1,5 +1,5 @@
 // src/inngest/functions.ts
-import { inngest } from "./client";
+import { inngest } from "@/features/inngest/client";
 
 export const processTask = inngest.createFunction(
   { id: "process-task", triggers: { event: "app/task.created" } },
