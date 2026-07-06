@@ -26,7 +26,7 @@ export const syncRepoCodebaseFunction = inngest.createFunction({
         })
     },
 }, async ({ event, step }) => {
-    const { repoSyncId } = event.data.event.data;
+    const { repoSyncId } = event.data;
 
     // mark as running
     const repoSync = await step.run("mark-syncing", async () => {

@@ -81,7 +81,7 @@ export const reviewPullRequest = inngest.createFunction(
           title: pullRequest.title,
           contextSnippets,
           repoContextSnippets,
-        });
+        } as any);
       });
   
       await step.run("post-pr-comment", async () => {
