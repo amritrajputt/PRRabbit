@@ -5,10 +5,9 @@ import {redirect} from "next/navigation";
 
 
 
-function buildSignInCallBackUrl(installationId:string){
-    
-    if(installationId){
-       return `/api/github/callback?installation_id=${installationId}`
+function buildSignInCallBackUrl(installationId: string | null) {
+    if (installationId) {
+        return `/api/github/callback?installation_id=${installationId}`
     }
     return DASHBOARD_ROUTES.github
 }
