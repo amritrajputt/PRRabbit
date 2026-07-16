@@ -38,7 +38,7 @@ function SubmitButton() {
 
 
 type GithubSignInFormProps = {
-  /** Optional post-login redirect path (e.g. GitHub install callback). */
+  
   callbackUrl?: string;
 };
 

@@ -1,70 +1,57 @@
+
 "use client";
 
-import React from 'react'
-import { useMutation , useQueryClient } from '@tanstack/react-query';
-import { githubRepoKeys } from '@/features/github/lib/repos-query';
-import { syncRepoCodebase } from '../actions/repo-sync';
-import { Button } from '@/components/ui/button';
-import { RepoSyncStatus } from '../types';
-import { toast } from 'sonner';
-
-
+import type { RepoSyncStatus } from "@/features/repo-sync/types/repo-sync";
+import { useSyncRepoMutation } from "@/features/repo-sync/lib/sync-repo-mutation";
+import { Button } from "@/components/ui/button";
 
 type SyncRepoButtonProps = {
-    repoFullName: string;
-    branch: string;
-    syncStatus: RepoSyncStatus | null;
-  };
-  
-
-  function isSyncing(status: RepoSyncStatus | null, mutationPending: boolean) {
-    if (mutationPending) {
-      return true;
-    }
-  
-    return status === "pending" || status === "syncing";
-  }
-
-  
-function getButtonLabel(status: RepoSyncStatus | null, mutationPending: boolean) {
-    if (isSyncing(status, mutationPending)) {
-      return "Syncing…";
-    }
-  
-    if (status === "synced") {
-      return "Re-sync";
-    }
-  
-    return "Sync";
-  }
-
-const SyncRepoButton = ({repoFullName , branch , syncStatus}:SyncRepoButtonProps) => {
-    const queryClient = useQueryClient();
-
-    const syncRepo = useMutation({
-        mutationFn:()=>syncRepoCodebase(repoFullName , branch),
-        onSuccess:()=>{
-            queryClient.invalidateQueries({ queryKey: githubRepoKeys.all });
-            toast.success(`Repo ${repoFullName} synced successfully`);
-        },
-        onError:(error)=>{
-            toast.error(`Failed to sync repo ${repoFullName}: ${error.message}`);
-        }
-    })
-
-    const syncing = isSyncing(syncStatus, syncRepo.isPending);
+  repoFullName: string;
+  branch: string;
+  syncStatus: RepoSyncStatus | null;
+};
 
 
-  return (
-     <Button
-      size="sm"
-      variant="outline"
-      disabled={syncing}
-      onClick={() => syncRepo.mutate()}
-    >
-      {getButtonLabel(syncStatus, syncRepo.isPending)}
-    </Button>
-  )
+function isSyncInProgress(status: RepoSyncStatus | null) {
+  return status === "pending" || status === "syncing";
 }
 
-export default SyncRepoButton
+
+function getButtonLabel(status: RepoSyncStatus | null) {
+  if (isSyncInProgress(status)) {
+    return "Syncing…";
+  }
+
+  if (status === "synced") {
+    return "Re-sync";
+  }
+
+  return "Sync";
+}
+
+
+export function SyncRepoButton({
+  repoFullName,
+  branch,
+  syncStatus,
+}: SyncRepoButtonProps) {
+  const syncRepo = useSyncRepoMutation();
+
+  function handleSync() {
+    
+    syncRepo.mutate({ repoFullName, branch });
+  }
+
+  const status = syncRepo.isPending ? "syncing" : syncStatus;
+
+  return (
+    <Button
+      size="sm"
+      variant="outline"
+      disabled={syncRepo.isPending || isSyncInProgress(syncStatus)}
+      onClick={handleSync}
+    >
+      {getButtonLabel(status)}
+    </Button>
+  );
+}

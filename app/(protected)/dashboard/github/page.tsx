@@ -1,29 +1,28 @@
-import React from 'react';
-import { Metadata } from 'next';
 
-import { requireAuth } from '@/features/auth/actions';
-import { DashboardHeader } from '@/features/dashboard/components/dashboard-header';
-import { getInstallationStatus } from '@/features/github/server/installation';
-import { GithubConnectCard } from '@/features/github/components/github-connect-card';
 
+import type { Metadata } from "next";
+
+import { DashboardHeader } from "@/features/dashboard/components/dashboard-header";
+import { GithubConnectCard } from "@/features/dashboard/components/github-connect-card";
+import { getInstallationStatus } from "@/features/github/server/installation";
+import { requireAuth } from "@/lib/auth-session";
 
 export const metadata: Metadata = {
-    title: "Github App - Dashboard",
-    description: "Manage your github apps",
-}
-const DashboardGithubPage = async() => {
+  title: "GitHub App · Dashboard",
+};
 
-    const session = await requireAuth();
-    const installation = await getInstallationStatus(session.user.id)
+
+export default async function DashboardGithubPage() {
+  const session = await requireAuth();
+  const installation = await getInstallationStatus(session.user.id);
 
   return (
     <>
-    <DashboardHeader
-    title="GitHub App"
-    description="Install or disconnect the reviewer app on your GitHub account."
-  />
-  <GithubConnectCard userId={session.user.id} installation={installation} />
-  </>
-  )
+      <DashboardHeader
+        title="GitHub App"
+        description="Install or disconnect the reviewer app on your GitHub account."
+      />
+      <GithubConnectCard userId={session.user.id} installation={installation} />
+    </>
+  );
 }
-export default DashboardGithubPage;

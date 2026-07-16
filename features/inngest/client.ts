@@ -1,3 +1,5 @@
+
 import { Inngest } from "inngest";
 
-export const inngest = new Inngest({ id: "pr-rabbit" });
+
+export const inngest = new Inngest({ id: "prrabbit" });

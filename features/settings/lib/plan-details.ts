@@ -1,4 +1,7 @@
+
+
 import type { SubscriptionPlan } from "@/features/dashboard/lib/types";
+
 
 export const PLAN_DETAILS: Record<
   SubscriptionPlan,
@@ -8,7 +11,7 @@ export const PLAN_DETAILS: Record<
     label: "Free",
     features: [
       "Up to 5 AI reviews per month",
-      "Public and private repositories only",
+      "Public repositories only",
       "Community support",
     ],
   },

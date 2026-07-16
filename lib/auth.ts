@@ -18,5 +18,5 @@ export const auth = betterAuth({
       })
     }, 
   }, 
-  plugins: [nextCookies()], // Add the future compatible when we use google for login
+  plugins: [nextCookies()], 
 });

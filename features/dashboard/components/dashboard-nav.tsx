@@ -1,13 +1,17 @@
+
+
 "use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  LayoutIcon ,
-  GitBranch,
-  GithubLogo,
-  Gear,
-} from "@phosphor-icons/react";
+  FolderGit2Icon,
+  GitPullRequestIcon,
+  LayoutDashboardIcon,
+  SettingsIcon,
+} from "lucide-react";
+
+import { GithubIcon } from "@/features/dashboard/components/icons/github-icon";
 
 import {
   DASHBOARD_NAV_ITEMS,
@@ -22,12 +26,15 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 
+
 const NAV_ICONS = {
-  "layout-dashboard": LayoutIcon ,
-  "folder-git-2": GitBranch,
-  github: GithubLogo,
-  settings: Gear,
+  "layout-dashboard": LayoutDashboardIcon,
+  "folder-git-2": FolderGit2Icon,
+  "git-pull-request": GitPullRequestIcon,
+  github: GithubIcon,
+  settings: SettingsIcon,
 } as const;
+
 
 function isNavActive(pathname: string, href: DashboardRoute) {
   if (href === "/dashboard") {
@@ -35,6 +42,7 @@ function isNavActive(pathname: string, href: DashboardRoute) {
   }
   return pathname === href || pathname.startsWith(`${href}/`);
 }
+
 
 export function DashboardNav() {
   const pathname = usePathname();

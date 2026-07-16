@@ -1,15 +1,30 @@
-import { startOfMonth } from "date-fns";
 
-import { getUserInstallationId } from "@/features/github/server/installation";
+
+import { FREE_MONTHLY_LIMIT, getMonthStart } from "@/features/billing/lib/limits";
 import { getUserSubscription } from "@/features/billing/server/subscription";
 import { prisma } from "@/lib/db";
 
-export const FREE_MONTHLY_LIMIT = 5;
 
 export type UsageSummary = {
   used: number;
+  
   limit: number | null;
 };
+
+
+async function getUserInstallationId(userId: string): Promise<number | null> {
+  const installation = await prisma.githubInstallation.findUnique({
+    where: { userId },
+    select: { installationId: true },
+  });
+
+  if (!installation) {
+    return null;
+  }
+
+  return installation.installationId;
+}
+
 
 export async function getReviewsThisMonth(userId: string): Promise<number> {
   const installationId = await getUserInstallationId(userId);
@@ -22,14 +37,16 @@ export async function getReviewsThisMonth(userId: string): Promise<number> {
     where: {
       installationId,
       status: "reviewed",
-      reviewedAt: { gte: startOfMonth(new Date()) },
+      reviewedAt: { gte: getMonthStart() },
     },
   });
 }
 
+
 export async function canUserReview(userId: string): Promise<boolean> {
   const subscription = await getUserSubscription(userId);
 
+  
   if (subscription.plan === "pro" && subscription.status === "active") {
     return true;
   }
@@ -37,6 +54,7 @@ export async function canUserReview(userId: string): Promise<boolean> {
   const used = await getReviewsThisMonth(userId);
   return used < FREE_MONTHLY_LIMIT;
 }
+
 
 export async function getUsageSummary(userId: string): Promise<UsageSummary> {
   const subscription = await getUserSubscription(userId);

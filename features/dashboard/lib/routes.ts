@@ -1,13 +1,18 @@
+
+
+
 export const DASHBOARD_ROUTES = {
   overview: "/dashboard",
   repos: "/dashboard/repos",
-  pullRequest:"/dashboard/pull-request",
+  pullRequests: "/dashboard/pull-requests",
   github: "/dashboard/github",
   settings: "/dashboard/settings",
 } as const;
 
+
 export type DashboardRoute =
   (typeof DASHBOARD_ROUTES)[keyof typeof DASHBOARD_ROUTES];
+
 
 export const DASHBOARD_NAV_ITEMS = [
   {
@@ -20,10 +25,10 @@ export const DASHBOARD_NAV_ITEMS = [
     href: DASHBOARD_ROUTES.repos,
     icon: "folder-git-2" as const,
   },
-   {
-    title: "PullRequests",
-    href: DASHBOARD_ROUTES.pullRequest,
-    icon: "folder-git-2" as const,
+  {
+    title: "Pull Requests",
+    href: DASHBOARD_ROUTES.pullRequests,
+    icon: "git-pull-request" as const,
   },
   {
     title: "GitHub App",

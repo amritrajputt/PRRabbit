@@ -1,20 +1,22 @@
-/**
- * Settings page body with Profile and Subscription tabs.
- *
- * Profile fields are read-only (sourced from GitHub). Subscription tab shows
- * plan details, usage, and upgrade/cancel actions via billing components.
- */
+
 
 "use client";
 
 import { format } from "date-fns";
 
-
+import { CancelSubscriptionButton } from "@/features/billing/components/cancel-subscription-button";
 import { UpgradeButton } from "@/features/billing/components/upgrade-button";
-
+import {
+  getDisplayName,
+  getInitials,
+} from "@/components/user/user-menu";
+import { statusBadge } from "@/features/dashboard/lib/status-styles";
 import type { UserSubscription } from "@/features/dashboard/lib/types";
 import { PLAN_DETAILS } from "@/features/settings/lib/plan-details";
-
+import type {
+  SettingsProfile,
+  UsageSummary,
+} from "@/features/settings/types/settings";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -29,11 +31,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SettingsProfile } from "@/features/settings/types";
-import { UsageSummary } from "@/features/billing/server/usage";
-import { statusBadge } from "../lib/status-style";
-import { CancelSubscriptionButton } from "@/features/billing/components/cancel-subscription-button";
-import { getDisplayName, getInitials } from "@/features/auth/components/user-menu";
 
 type SettingsContentProps = {
   profile: SettingsProfile;
@@ -41,12 +38,7 @@ type SettingsContentProps = {
   usage: UsageSummary;
 };
 
-/**
- * Formats a renewal ISO date for display, or returns null when absent.
- *
- * @param renewsAt - Subscription renewal timestamp or null.
- * @returns Formatted date like "June 12, 2026", or null.
- */
+
 function formatRenewalDate(renewsAt: string | null): string | null {
   if (!renewsAt) {
     return null;
@@ -55,12 +47,7 @@ function formatRenewalDate(renewsAt: string | null): string | null {
   return format(new Date(renewsAt), "MMMM d, yyyy");
 }
 
-/**
- * Maps subscription status enum to a lowercase label for the UI.
- *
- * @param status - `active`, `trialing`, or `canceled`.
- * @returns Display string for the status line.
- */
+
 function getSubscriptionStatusLabel(status: UserSubscription["status"]): string {
   if (status === "active") {
     return "active";
@@ -73,12 +60,7 @@ function getSubscriptionStatusLabel(status: UserSubscription["status"]): string 
   return "canceled";
 }
 
-/**
- * Profile tab — avatar, read-only name/email, member since date.
- *
- * @param profile - User profile from GitHub OAuth.
- * @returns Profile card content.
- */
+
 function ProfileTab({ profile }: { profile: SettingsProfile }) {
   const displayName = getDisplayName(profile);
   const initials = getInitials(profile);
@@ -133,12 +115,7 @@ function ProfileTab({ profile }: { profile: SettingsProfile }) {
   );
 }
 
-/**
- * Builds the monthly usage summary line for the subscription tab.
- *
- * @param usage - Review count used and optional monthly limit.
- * @returns Sentence describing current usage.
- */
+
 function getUsageText(usage: UsageSummary): string {
   if (usage.limit === null) {
     return `${usage.used} reviews used this month (unlimited)`;
@@ -147,13 +124,7 @@ function getUsageText(usage: UsageSummary): string {
   return `${usage.used} / ${usage.limit} reviews used this month`;
 }
 
-/**
- * Subscription tab — plan card, usage, feature list, billing actions.
- *
- * @param subscription - Current plan and billing status.
- * @param usage - Monthly AI review usage counts.
- * @returns Subscription management card.
- */
+
 function SubscriptionTab({
   subscription,
   usage,
@@ -167,7 +138,7 @@ function SubscriptionTab({
 
   const isActive = subscription.status === "active" || subscription.status === "trialing";
 
-  // Visual styling reflects active vs inactive subscription
+  
   let cardBorderClass = "border-border";
   let planTextClass = "text-foreground";
   let statusTextClass = "text-muted-foreground";
@@ -236,14 +207,7 @@ function SubscriptionTab({
   );
 }
 
-/**
- * Settings page with tabbed Profile and Subscription sections.
- *
- * @param profile - User profile data from the server.
- * @param subscription - Billing subscription state.
- * @param usage - Monthly review usage summary.
- * @returns Tabbed settings UI below `DashboardHeader`.
- */
+
 export function SettingsContent({
   profile,
   subscription,

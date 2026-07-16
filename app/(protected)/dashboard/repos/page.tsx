@@ -4,13 +4,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { DashboardHeader } from "@/features/dashboard/components/dashboard-header";
-
+import { ReposList } from "@/features/dashboard/components/repos-list";
 import { DASHBOARD_ROUTES } from "@/features/dashboard/lib/routes";
 import { getInstallationStatus } from "@/features/github/server/installation";
-
+import { requireAuth } from "@/lib/auth-session";
 import { Button } from "@/components/ui/button";
-import { requireAuth } from "@/features/auth/actions";
-import { RepoList } from "@/features/dashboard/components/repo-list";
 
 export const metadata: Metadata = {
   title: "Repositories · Dashboard",
@@ -30,11 +28,7 @@ function ReposNotConnected() {
   );
 }
 
-/**
- * Repositories list page with GitHub connection guard.
- *
- * @returns Header plus either connect prompt or interactive repo table.
- */
+
 export default async function DashboardReposPage() {
   const session = await requireAuth();
   const installation = await getInstallationStatus(session.user.id);
@@ -58,7 +52,7 @@ export default async function DashboardReposPage() {
   return (
     <>
       {header}
-      <RepoList />
+      <ReposList />
     </>
   );
 }
