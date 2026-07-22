@@ -16,11 +16,15 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+
 });
 
 export const metadata: Metadata = {
   title: "PRRabbit - AI Code Reviewer",
   description: "Automate your pull request reviews with AI code insight",
+  icons:{
+    icon:"/logo2.svg"
+  }
 };
 
 export default function RootLayout({
