@@ -486,11 +486,10 @@ export default function Home() {
                 </ul>
               </div>
               <Button
-                nativeButton={false}
-                render={<Link href="/sign-in" />}
-                className="w-full h-9 text-xs bg-accent-green hover:bg-accent-green-hover text-black font-bold border-none rounded-md"
+                disabled
+                className="w-full h-9 text-xs bg-accent-green/40 text-black/50 font-bold border-none rounded-md cursor-not-allowed"
               >
-                Start 14-Day Free Trial
+                Coming Soon
               </Button>
             </Card>
           </div>
