@@ -11,6 +11,7 @@ import {
   searchPrContext,
 } from "@/features/reviews/server/vectors";
 import { chunkPrFiles } from "@/features/reviews/utils/chunk-code";
+import { getPineconeIndex } from "@/features/pinecone/client";
 
 
 export const reviewPullRequest = inngest.createFunction(
@@ -32,7 +33,7 @@ export const reviewPullRequest = inngest.createFunction(
         pullRequest.prNumber
       );
 
-      
+
       return chunkPrFiles(pullRequest.prNumber, files);
     });
 
@@ -47,7 +48,7 @@ export const reviewPullRequest = inngest.createFunction(
       return { pullRequestId, status: "reviewed", reason: "no code to review" };
     }
 
-    
+
     const namespace = buildPrNamespace(
       pullRequest.repoFullName,
       pullRequest.prNumber
@@ -57,10 +58,10 @@ export const reviewPullRequest = inngest.createFunction(
       await saveChunksToPinecone(namespace, chunks);
     });
 
-    
+
     await step.sleep("wait-for-vectors-to-index", "10s");
 
-    
+
     const repoContextSnippets = await step.run("search-repo-context", async () => {
       const repoSync = await prisma.repoSync.findUnique({
         where: { repoFullName: pullRequest.repoFullName },
@@ -75,7 +76,7 @@ export const reviewPullRequest = inngest.createFunction(
     });
 
     const review = await step.run("generate-ai-review", async () => {
-      
+
       const contextSnippets = await searchPrContext(
         namespace,
         pullRequest.title
@@ -97,6 +98,11 @@ export const reviewPullRequest = inngest.createFunction(
         review
       );
     });
+    await step.run("cleanup-pr-vectors", async () => {
+      const index = getPineconeIndex();
+      await index.namespace(namespace).deleteAll();
+    });
+
 
     await step.run("mark-reviewed", async () => {
       await prisma.pullRequest.update({
